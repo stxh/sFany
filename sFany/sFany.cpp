@@ -132,6 +132,8 @@ VOID ProcMonitorThread(VOID *)
 VOID WINAPI sFanyStopFuntion(DWORD fdwControl)
 {
 	WriteLog(TEXT("--> sFanyMain start..."));
+	ProcessStarted = FALSE;
+	Sleep(1500);
 
 	DWORD dwCode;
 	list<psProcInfo>::iterator proc_Iter;
@@ -142,33 +144,40 @@ VOID WINAPI sFanyStopFuntion(DWORD fdwControl)
 			if(dwCode == STILL_ACTIVE)
 			{
 				EndProcess(&pProcInfo->ProcInfo);
-				Sleep(5000);
+				Sleep(1000);
 				WriteLog(TEXT("End process %s\n"),pProcInfo->strCmdLine);
 			}
 		} else {
 			dwCode=GetLastError();
 		}
 	}
-	ProcessStarted = FALSE;
 }
 
 // User Main Service Function
 VOID WINAPI sFanyMain(DWORD dwArgc, LPTSTR *lpszArgv)
 {
 	WriteLog(TEXT("--> sFanyMain start..."));
-	//for Debug //Sleep(10000);
-	/*
-	if(_beginthread(ProcMonitorThread, 0, NULL) == -1)
-	{
-		WriteLog(TEXT("--> sFanyMain _beginthread ProcMonitorThread Error"));
-		return;
-	}
-	*/
 	
 	ProcMonitorThread(NULL);
 
+	DWORD dwCode;
+	list<psProcInfo>::iterator proc_Iter;
+
 	while(ProcessStarted)
 	{
+		for ( proc_Iter = g_listProcInfo.begin( ); proc_Iter != g_listProcInfo.end( ); proc_Iter++ ) {
+			psProcInfo pProcInfo=*proc_Iter;
+			if(::GetExitCodeProcess(pProcInfo->ProcInfo.hProcess, &dwCode) && pProcInfo->ProcInfo.hProcess != NULL)
+			{
+				if(dwCode != STILL_ACTIVE)
+				{
+					if(StartProcess(pProcInfo))
+					{
+						WriteLog(TEXT("Start process %s\n"),pProcInfo->strCmdLine);
+					}
+				}
+			}
+		}
 		Sleep(1000);
 	}
 }
