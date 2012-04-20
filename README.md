@@ -9,10 +9,17 @@ So I write my srvany, it is sFany here.
 
 Usage
 =====
+<<<<<<< HEAD
 	sFany [option]
 
 	Options:
 		-v      View services list
+=======
+  sFany [option]
+
+  Options:
+        -v      View services list
+>>>>>>> 77d2d7f923028d2b9796357f12c4b78e2cc803fd
         -i      Install service
         -u      Uninstall service
         -k      Kill/stop service
