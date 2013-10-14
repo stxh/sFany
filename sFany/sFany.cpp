@@ -191,7 +191,8 @@ void DisplayHelp()
 	cout << "\t-i \tInstall service" << endl;
 	cout << "\t-u \tUninstall service" << endl;
 	cout << "\t-k \tKill/stop service" << endl;
-	cout << "\t-s \tStart service" << endl << endl;
+	cout << "\t-s \tStart service" << endl;
+	cout << "\t-r \tRestart service" << endl << endl;
 }
 
 TCHAR strServiceName[MAX_PATH]=__T("sFany");
@@ -267,6 +268,11 @@ int _tmain(int argc, _TCHAR* argv[])
 				KillService(strServiceName);
 				break;
 			case 's':
+				RunService(strServiceName);
+				break;
+			case 'r':
+				KillService(strServiceName);
+				//Sleep(1000);
 				RunService(strServiceName);
 				break;
 			case 'v':
