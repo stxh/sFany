@@ -1,8 +1,11 @@
 //  Service.cpp : Defines the entry point for the console application.
 //
 #include <string>
+#include <iostream>
 
 #include "Service.h"
+
+using namespace std;
 
 #pragma warning(disable : 4996)
 
@@ -20,42 +23,42 @@ SERVICE_STATUS          ServiceStatus;
 LPSERVICE_MAIN_FUNCTION UserServiceMain=NULL;
 LPSERVICE_USER_FUNCTION UserStopFunction=NULL;
 
-VOID Install(const TCHAR* pPath, const TCHAR* pName)
+DWORD Install(const TCHAR* pPath, const TCHAR* pName)
 {  
+	DWORD dwReturn;
+	WriteLog(TEXT("-->sFany Install Path=[%s] Name=[%s] error code = %d"), pPath, pName, GetLastError());
+	
 	SC_HANDLE schSCManager = OpenSCManager( NULL, NULL, SC_MANAGER_CREATE_SERVICE); 
-	if (schSCManager==0) 
-	{
-		WriteLog(TEXT("-->Service OpenSCManager failed, error code = %d"), GetLastError());
+	if (schSCManager==0) {
+		dwReturn = GetLastError();
+		WriteLog(TEXT("-->Service OpenSCManager failed, error code = %d"), dwReturn);
+		return dwReturn;
 	}
-	else
-	{
-		SC_HANDLE schService = CreateService
-		( 
-			schSCManager,	/* SCManager database      */ 
-			pName,			/* name of service         */ 
-			pName,			/* service name to display */ 
-			SERVICE_ALL_ACCESS,        /* desired access          */ 
-			SERVICE_WIN32_OWN_PROCESS|SERVICE_INTERACTIVE_PROCESS , /* service type            */ 
-			SERVICE_AUTO_START,      /* start type              */ 
-			SERVICE_ERROR_NORMAL,      /* error control type      */ 
-			pPath,			/* service's binary        */ 
-			NULL,                      /* no load ordering group  */ 
-			NULL,                      /* no tag identifier       */ 
-			NULL,                      /* no dependencies         */ 
-			NULL,                      /* LocalSystem account     */ 
-			NULL
-		);                     /* no password             */ 
-		if (schService==0) 
-		{
-			WriteLog(TEXT("-->Service Failed to create service %s, error code = %d"), pName, GetLastError());
-		}
-		else
-		{
-			WriteLog( TEXT("-->Service Service %s installed"), pName);
-			CloseServiceHandle(schService); 
-		}
-		CloseServiceHandle(schSCManager);
-	}	
+
+	SC_HANDLE schService = CreateService
+	( 
+		schSCManager,	/* SCManager database      */ 
+		pName,			/* name of service         */ 
+		pName,			/* service name to display */ 
+		SERVICE_ALL_ACCESS,        /* desired access          */ 
+		SERVICE_WIN32_OWN_PROCESS|SERVICE_INTERACTIVE_PROCESS , /* service type            */ 
+		SERVICE_AUTO_START,      /* start type              */ 
+		SERVICE_ERROR_NORMAL,      /* error control type      */ 
+		pPath,			/* service's binary        */ 
+		NULL,                      /* no load ordering group  */ 
+		NULL,                      /* no tag identifier       */ 
+		NULL,                      /* no dependencies         */ 
+		NULL,                      /* LocalSystem account     */ 
+		NULL
+	);                     /* no password             */ 
+
+	if (schService==0) {
+		WriteLog(TEXT("-->Service Failed to create service %s, error code = %d"), pName, GetLastError());
+	} else {
+		WriteLog( TEXT("-->Service Service %s installed"), pName);
+		CloseServiceHandle(schService); 
+	}
+	return CloseServiceHandle(schSCManager);	
 }
 
 VOID UnInstall(const TCHAR* pName)

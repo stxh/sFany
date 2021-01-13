@@ -198,10 +198,10 @@ void DisplayHelp()
 TCHAR strServiceName[MAX_PATH]=__T("sFany");
 //basic_string<TCHAR> strServiceName(__T("sFany")) ;
 
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, _TCHAR* argv[])
 {
 	WriteLog(__T("--> sFany start ==================================================="));
-
+	
 	TCHAR strServiceState[][32] = {
 		__T("SERVICE_ERROR"),
 		__T("SERVICE_STOPPED"),
@@ -254,12 +254,21 @@ int _tmain(int argc, _TCHAR* argv[])
 	if (argc == 2) {
 		TCHAR strModuleFile[MAX_PATH];
 		DWORD dwSize;
+		DWORD dwReturn;
 		list<psProcInfo>::iterator proc_Iter;
-		if (argv[1][0] == '-') {
-			switch(argv[1][1]) {
+
+		LPSTR v = (LPSTR)argv[1];
+		// WriteLog(__T("--> sFany test v=[%s]"), v);
+
+		if (v[0] == '-') {
+			switch(v[1]) {
 			case 'i':
 				dwSize = GetModuleFileName(NULL, strModuleFile, MAX_PATH);
-				Install(strModuleFile, strServiceName);
+				dwReturn = Install(strModuleFile, strServiceName);
+				WriteLog(TEXT("-->debug dwReturh %d"), dwReturn);
+				if (dwReturn == ERROR_ACCESS_DENIED) {
+					wcout << TEXT("Please run sFany as Administrator.") << endl;
+				}
 				break;
 			case 'u':
 				UnInstall(strServiceName);
@@ -278,7 +287,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			case 'v':
 				for ( proc_Iter = g_listProcInfo.begin( ); proc_Iter != g_listProcInfo.end( ); proc_Iter++ ) {
 					psProcInfo pProcInfo=*proc_Iter;
-					wcout << TEXT(" cmdlin:")<< pProcInfo->strCmdLine << endl;
+					wcout << TEXT(" cmdlin: ")<< pProcInfo->strCmdLine << endl;
 				}
 				break;
 			default:

@@ -5,7 +5,7 @@
 #include "utils.h"
 
 /** Window Service Functions**/
-VOID Install(const TCHAR* pPath, const TCHAR* pName);
+DWORD Install(const TCHAR* pPath, const TCHAR* pName);
 VOID UnInstall(const TCHAR* pName);
 BOOL KillService(const TCHAR* pName);
 BOOL RunService(const TCHAR* pName);
