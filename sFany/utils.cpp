@@ -11,6 +11,7 @@
 static const int MAX_BUFFER_LEN = 1024;
 
 DEBUG_OUTPUT_TYPE g_dotDebugOption=E_DEBUG_NULL;
+//DEBUG_OUTPUT_TYPE g_dotDebugOption = E_DEBUG_LOG;
 
 int SetDebugOutputType(DEBUG_OUTPUT_TYPE dotOption) {
 	return g_dotDebugOption=dotOption;

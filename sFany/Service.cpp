@@ -26,6 +26,9 @@ LPSERVICE_USER_FUNCTION UserStopFunction=NULL;
 DWORD Install(const TCHAR* pPath, const TCHAR* pName)
 {  
 	DWORD dwReturn;
+	SERVICE_DESCRIPTION sd;
+	sd.lpDescription = TEXT("sFany: Run your command line programes as windows service.");
+
 	WriteLog(TEXT("-->sFany Install Path=[%s] Name=[%s] error code = %d"), pPath, pName, GetLastError());
 	
 	SC_HANDLE schSCManager = OpenSCManager( NULL, NULL, SC_MANAGER_CREATE_SERVICE); 
@@ -55,6 +58,10 @@ DWORD Install(const TCHAR* pPath, const TCHAR* pName)
 	if (schService==0) {
 		WriteLog(TEXT("-->Service Failed to create service %s, error code = %d"), pName, GetLastError());
 	} else {
+		ChangeServiceConfig2(schService,                 // handle to service
+			SERVICE_CONFIG_DESCRIPTION, // change: description
+			&sd);                     // new description
+
 		WriteLog( TEXT("-->Service Service %s installed"), pName);
 		CloseServiceHandle(schService); 
 	}

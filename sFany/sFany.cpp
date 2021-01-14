@@ -258,7 +258,7 @@ int main(int argc, _TCHAR* argv[])
 		list<psProcInfo>::iterator proc_Iter;
 
 		LPSTR v = (LPSTR)argv[1];
-		// WriteLog(__T("--> sFany test v=[%s]"), v);
+		WriteLog(__T("--> sFany test v=[%x %x %x]"), v[0], v[1], '-');
 
 		if (v[0] == '-') {
 			switch(v[1]) {
