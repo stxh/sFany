@@ -12,7 +12,7 @@ Usage
 	sFany [option]
 
 	Options:
-		-v      View services list
+        -v      View services list
         -i      Install service
         -u      Uninstall service
         -k      Kill/stop service
